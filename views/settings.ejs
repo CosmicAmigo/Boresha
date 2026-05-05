@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Boresha Settings</title>
+  <link rel="stylesheet" href="/public/styles.css" />
+</head>
+<body>
+  <%- include('partials/nav', { user: user, activePage: activePage }) %>
+  <main>
+    <section class="section">
+      <div class="section-header">
+        <div>
+          <h2>Settings</h2>
+          <p>Choose your currency and notification preferences.</p>
+        </div>
+      </div>
+      <div class="card form-card" style="max-width: 520px;">
+        <form action="/settings" method="post">
+          <div class="form-field">
+            <label for="currency">Currency</label>
+            <select id="currency" name="currency">
+              <option value="USD" <%= settings.currency === 'USD' ? 'selected' : '' %>>USD</option>
+              <option value="EUR" <%= settings.currency === 'EUR' ? 'selected' : '' %>>EUR</option>
+              <option value="GBP" <%= settings.currency === 'GBP' ? 'selected' : '' %>>GBP</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label class="label" for="alerts">Enable alerts</label>
+            <input id="alerts" name="alerts" type="checkbox" <%= settings.alerts ? 'checked' : '' %> />
+          </div>
+          <button class="button" type="submit">Save settings</button>
+        </form>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

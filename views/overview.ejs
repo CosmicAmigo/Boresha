@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Boresha Overview</title>
+  <link rel="stylesheet" href="/public/styles.css" />
+</head>
+<body>
+  <%- include('partials/nav', { user: user, activePage: activePage }) %>
+  <main>
+    <section class="section">
+      <div class="section-header">
+        <div>
+          <h2>Home Overview</h2>
+          <p>See your full finance picture in one place.</p>
+        </div>
+      </div>
+      <div class="grid grid-3" id="overviewGrid">
+        <div class="card">
+          <h3>Total available</h3>
+          <p class="value"><%= settings.currency %> <%= summary.totalAvailable.toFixed(2) %></p>
+          <p class="label">Your combined personal and business balance.</p>
+        </div>
+        <div class="card">
+          <h3>Money coming in</h3>
+          <p class="value"><%= settings.currency %> <%= summary.income.toFixed(2) %></p>
+          <p class="label">All income across accounts.</p>
+        </div>
+        <div class="card">
+          <h3>Money going out</h3>
+          <p class="value"><%= settings.currency %> <%= summary.expense.toFixed(2) %></p>
+          <p class="label">All expenses across accounts.</p>
+        </div>
+      </div>
+      <div class="grid grid-2" style="margin-top: 24px;">
+        <div class="card">
+          <h3>Personal balance</h3>
+          <p class="value"><%= settings.currency %> <%= summary.personalBalance.toFixed(2) %></p>
+        </div>
+        <div class="card">
+          <h3>Business balance</h3>
+          <p class="value"><%= settings.currency %> <%= summary.businessBalance.toFixed(2) %></p>
+        </div>
+      </div>
+      <div class="section-header" style="margin-top:26px;">
+        <div>
+          <h2>Goals progress</h2>
+          <p>Watch your progress toward each target.</p>
+        </div>
+      </div>
+      <div class="grid grid-2">
+        <% if (!goals.length) { %>
+          <div class="card">
+            <p class="label">No goals yet. Add one to begin tracking.</p>
+          </div>
+        <% } %>
+        <% goals.forEach(goal => {
+          const progress = Math.min(100, Math.round((goal.saved / goal.target) * 100));
+        %>
+          <div class="card">
+            <h3><%= goal.name %></h3>
+            <p class="label">Target <%= settings.currency %> <%= Number(goal.target).toFixed(2) %> by <%= new Date(goal.due).toISOString().slice(0,10) %></p>
+            <div class="progress-bar"><div class="progress-fill" style="width:<%= progress %>%"></div></div>
+            <p class="label" style="margin-top:10px">Saved <%= settings.currency %> <%= Number(goal.saved).toFixed(2) %> (<%= progress %>%)</p>
+          </div>
+        <% }) %>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

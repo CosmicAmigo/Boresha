@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Boresha Personal Finance</title>
+  <link rel="stylesheet" href="/public/styles.css" />
+</head>
+<body>
+  <%- include('partials/nav', { user: user, activePage: activePage }) %>
+  <main>
+    <section class="section">
+      <div class="section-header">
+        <div>
+          <h2>Personal Finance</h2>
+          <p>Add income or expense entries and review your transactions.</p>
+        </div>
+      </div>
+      <div class="grid grid-2">
+        <div class="card">
+          <h3>Entries</h3>
+          <table class="table">
+            <thead>
+              <tr><th>Date</th><th>Description</th><th>Category</th><th>Amount</th></tr>
+            </thead>
+            <tbody>
+              <% if (!personalEntries.length) { %>
+                <tr><td colspan="4" class="label">No personal transactions yet.</td></tr>
+              <% } %>
+              <% personalEntries.forEach(entry => { %>
+                <tr>
+                  <td><%= new Date(entry.date).toISOString().slice(0,10) %></td>
+                  <td><%= entry.description %></td>
+                  <td><%= entry.category %></td>
+                  <td><%= entry.type === 'income' ? '+' : '-' %><%= settings.currency %> <%= Number(entry.amount).toFixed(2) %></td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+        <div class="card form-card">
+          <h3>Add transaction</h3>
+          <form action="/personal" method="post">
+            <div class="form-field">
+              <label for="type">Transaction type</label>
+              <select id="type" name="type">
+                <option value="income">Income</option>
+                <option value="expense">Expense</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label for="description">Description</label>
+              <input id="description" name="description" required placeholder="Salary, groceries, rent" />
+            </div>
+            <div class="form-field">
+              <label for="category">Category</label>
+              <select id="category" name="category">
+                <% categories.forEach(category => { %>
+                  <option value="<%= category %>"><%= category %></option>
+                <% }) %>
+              </select>
+            </div>
+            <div class="form-field">
+              <label for="amount">Amount</label>
+              <input id="amount" name="amount" type="number" min="0" step="0.01" required placeholder="0.00" />
+            </div>
+            <div class="form-field">
+              <label for="date">Date</label>
+              <input id="date" name="date" type="date" required />
+            </div>
+            <button class="button" type="submit">Save entry</button>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

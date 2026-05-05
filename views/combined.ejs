@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Boresha Combined View</title>
+  <link rel="stylesheet" href="/public/styles.css" />
+</head>
+<body>
+  <%- include('partials/nav', { user: user, activePage: activePage }) %>
+  <main>
+    <section class="section">
+      <div class="section-header">
+        <div>
+          <h2>Combined Financial View</h2>
+          <p>See personal and business finances together.</p>
+        </div>
+      </div>
+      <div class="grid grid-3">
+        <div class="card">
+          <h3>Total combined money</h3>
+          <p class="value"><%= settings.currency %> <%= combined.total.toFixed(2) %></p>
+        </div>
+        <div class="card">
+          <h3>Total income</h3>
+          <p class="value"><%= settings.currency %> <%= combined.income.toFixed(2) %></p>
+        </div>
+        <div class="card">
+          <h3>Total spending</h3>
+          <p class="value"><%= settings.currency %> <%= combined.expense.toFixed(2) %></p>
+        </div>
+      </div>
+      <div class="card" style="margin-top: 20px;">
+        <h3>Overall profit / loss</h3>
+        <p class="value"><%= settings.currency %> <%= combined.profit.toFixed(2) %></p>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Boresha Business</title>
+  <link rel="stylesheet" href="/public/styles.css" />
+</head>
+<body>
+  <%- include('partials/nav', { user: user, activePage: activePage }) %>
+  <main>
+    <section class="section">
+      <div class="section-header">
+        <div>
+          <h2>Business</h2>
+          <p>Manage your businesses and track revenue and expenses per company.</p>
+        </div>
+      </div>
+      <div class="grid grid-2">
+        <div class="card form-card">
+          <h3>Add a business</h3>
+          <form action="/business" method="post">
+            <div class="form-field">
+              <label for="name">Business name</label>
+              <input id="name" name="name" required placeholder="Retail shop, consulting firm" />
+            </div>
+            <div class="form-field">
+              <label for="type">Business type</label>
+              <select id="type" name="type">
+                <option value="Retail">Retail</option>
+                <option value="Service">Service</option>
+                <option value="Consulting">Consulting</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <button class="button" type="submit">Create business</button>
+          </form>
+        </div>
+        <div class="card">
+          <h3>Businesses</h3>
+          <% if (!businesses.length) { %>
+            <p class="label">No businesses yet. Add one to begin tracking.</p>
+          <% } %>
+          <div class="grid grid-2" style="margin-top: 16px;">
+            <% businesses.forEach(business => { %>
+              <div class="card" style="padding: 18px;">
+                <h3><%= business.name %></h3>
+                <p class="label">Type: <%= business.type %></p>
+                <a href="/business?id=<%= business.id %>" class="button">View transactions</a>
+              </div>
+            <% }) %>
+          </div>
+        </div>
+      </div>
+
+      <% if (selectedBusiness) { %>
+        <div class="section-header" style="margin-top: 26px;">
+          <div>
+            <h2><%= selectedBusiness.name %></h2>
+            <p>Transactions for this business.</p>
+          </div>
+        </div>
+        <div class="card form-card">
+          <h3>Add transaction</h3>
+          <form action="/business/<%= selectedBusiness.id %>/transaction" method="post">
+            <div class="form-field">
+              <label for="description">Description</label>
+              <input id="description" name="description" required placeholder="Sale, supplier payment" />
+            </div>
+            <div class="form-field">
+              <label for="amount">Amount</label>
+              <input id="amount" name="amount" type="number" min="0" step="0.01" required placeholder="0.00" />
+            </div>
+            <div class="form-field">
+              <label for="type">Type</label>
+              <select id="type" name="type">
+                <option value="income">Income</option>
+                <option value="expense">Expense</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label for="date">Date</label>
+              <input id="date" name="date" type="date" required />
+            </div>
+            <button class="button" type="submit">Save transaction</button>
+          </form>
+        </div>
+        <div class="card" style="margin-top: 20px;">
+          <table class="table">
+            <thead>
+              <tr><th>Date</th><th>Description</th><th>Amount</th><th>Type</th></tr>
+            </thead>
+            <tbody>
+              <% if (!transactions.length) { %>
+                <tr><td colspan="4" class="label">No transactions recorded yet.</td></tr>
+              <% } %>
+              <% transactions.forEach(transaction => { %>
+                <tr>
+                  <td><%= new Date(transaction.date).toISOString().slice(0,10) %></td>
+                  <td><%= transaction.description %></td>
+                  <td><%= transaction.type === 'income' ? '+' : '-' %><%= settings.currency %> <%= Number(transaction.amount).toFixed(2) %></td>
+                  <td><%= transaction.type %></td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
+    </section>
+  </main>
+</body>
+</html>

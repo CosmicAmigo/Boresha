@@ -1,0 +1,18 @@
+<header>
+  <div>
+    <h1>Boresha</h1>
+    <p>Clear finance tracking for personal and business money.</p>
+  </div>
+  <nav>
+    <a href="/overview" class="<%= activePage === 'overview' ? 'active' : '' %>">Overview</a>
+    <a href="/personal" class="<%= activePage === 'personal' ? 'active' : '' %>">Personal</a>
+    <a href="/goals" class="<%= activePage === 'goals' ? 'active' : '' %>">Goals</a>
+    <a href="/business" class="<%= activePage === 'business' ? 'active' : '' %>">Business</a>
+    <a href="/combined" class="<%= activePage === 'combined' ? 'active' : '' %>">Combined</a>
+    <a href="/settings" class="<%= activePage === 'settings' ? 'active' : '' %>">Settings</a>
+  </nav>
+  <div style="margin-left:auto; display:flex; align-items:center; gap:.75rem;">
+    <span class="label">Signed in as <strong><%= user.email %></strong></span>
+    <a href="/logout" class="button">Logout</a>
+  </div>
+</header>
