@@ -11,19 +11,26 @@ const port = process.env.PORT || 3000;
 const databaseUrl = process.env.DATABASE_URL;
 const googleClientId = process.env.GOOGLE_CLIENT_ID;
 const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
-const callbackUrl = process.env.GOOGLE_CALLBACK_URL || 'http://localhost:3000/auth/google/callback';
-const sessionSecret = process.env.SESSION_SECRET || 'change-this-secret';
+const callbackUrl = process.env.GOOGLE_CALLBACK_URL;
+const sessionSecret = process.env.SESSION_SECRET;
+const nodeEnv = process.env.NODE_ENV || 'development';
 
 if (!databaseUrl) {
-  throw new Error('Missing DATABASE_URL environment variable');
+  throw new Error('Missing required environment variable: DATABASE_URL');
 }
 if (!googleClientId || !googleClientSecret) {
-  throw new Error('Missing GOOGLE_CLIENT_ID or GOOGLE_CLIENT_SECRET environment variable');
+  throw new Error('Missing required environment variables: GOOGLE_CLIENT_ID or GOOGLE_CLIENT_SECRET');
+}
+if (!callbackUrl) {
+  throw new Error('Missing required environment variable: GOOGLE_CALLBACK_URL');
+}
+if (!sessionSecret && nodeEnv === 'production') {
+  throw new Error('Missing required environment variable: SESSION_SECRET (required for production)');
 }
 
 const pool = new Pool({
   connectionString: databaseUrl,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+  ssl: nodeEnv === 'production' ? { rejectUnauthorized: false } : false
 });
 
 app.set('view engine', 'ejs');
@@ -31,9 +38,10 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(session({
-  secret: sessionSecret,
+  secret: sessionSecret || 'dev-secret',
   resave: false,
-  saveUninitialized: false
+  saveUninitialized: false,
+  cookie: nodeEnv === 'production' ? { secure: true, httpOnly: true, sameSite: 'lax' } : {}
 }));
 app.use(passport.initialize());
 app.use(passport.session());

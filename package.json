@@ -4,7 +4,8 @@
   "description": "Personal finance and business tracking website built with Node.js and PostgreSQL.",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "build": "node initdb.js"
   },
   "dependencies": {
     "dotenv": "^16.3.1",
@@ -16,7 +17,7 @@
     "pg": "^8.11.1"
   },
   "engines": {
-    "node": ">=18"
+    "node": "18.18.0"
   },
   "license": "MIT"
 }
