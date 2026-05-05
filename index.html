@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Boresha Finance Dashboard</title>
+  <link rel="stylesheet" href="public/styles.css" />
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Boresha</h1>
+      <p>Your finance and business tracking dashboard.</p>
+    </div>
+    <nav>
+      <a href="#overview" class="active">Overview</a>
+      <a href="#personal">Personal</a>
+      <a href="#goals">Goals</a>
+      <a href="#business">Business</a>
+      <a href="#combined">Combined</a>
+      <a href="#settings">Settings</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="section" id="overview">
+      <div class="section-header">
+        <div>
+          <h2>Home Overview</h2>
+          <p>See how your money is doing across personal and business accounts.</p>
+        </div>
+      </div>
+      <div class="grid grid-3" id="overviewGrid"></div>
+      <div class="grid grid-2" style="margin-top: 22px;">
+        <div class="card">
+          <h3>Personal money</h3>
+          <p class="value" id="breakdownPersonal"></p>
+        </div>
+        <div class="card">
+          <h3>Business money</h3>
+          <p class="value" id="breakdownBusiness"></p>
+        </div>
+      </div>
+      <div class="section-header" style="margin-top: 26px;">
+        <div>
+          <h2>Goals progress</h2>
+          <p>Track how close you are to each savings plan.</p>
+        </div>
+      </div>
+      <div id="goalProgressList" class="grid grid-2"></div>
+    </section>
+
+    <section class="section" id="personal">
+      <div class="section-header">
+        <div>
+          <h2>Personal Finance</h2>
+          <p>Add income, record spending, and review your personal cash flow.</p>
+        </div>
+      </div>
+      <div class="grid grid-2">
+        <div class="card">
+          <h3>Balance</h3>
+          <p class="value" id="personalBalanceValue"></p>
+        </div>
+        <div class="card form-card" id="personalFormCard">
+          <h3>Add transaction</h3>
+          <form id="personalForm" onsubmit="event.preventDefault(); addPersonalEntry();">
+            <div class="form-field">
+              <label for="personalType">Transaction type</label>
+              <select id="personalType">
+                <option value="income">Income</option>
+                <option value="expense">Expense</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label for="personalDescription">Description</label>
+              <input id="personalDescription" placeholder="Salary, food, rent" />
+            </div>
+            <div class="form-field">
+              <label for="personalCategory">Category</label>
+              <select id="personalCategory"></select>
+            </div>
+            <div class="form-field">
+              <label for="personalAmount">Amount</label>
+              <input id="personalAmount" type="number" min="0" step="0.01" placeholder="0.00" />
+            </div>
+            <div class="form-field">
+              <label for="personalDate">Date</label>
+              <input id="personalDate" type="date" />
+            </div>
+            <button class="button" type="submit">Save personal entry</button>
+          </form>
+        </div>
+      </div>
+      <div class="card" style="margin-top: 20px;">
+        <table class="table">
+          <thead>
+            <tr><th>Date</th><th>Description</th><th>Category</th><th>Amount</th></tr>
+          </thead>
+          <tbody id="personalTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section" id="goals">
+      <div class="section-header">
+        <div>
+          <h2>Goals</h2>
+          <p>Create saving goals, set targets, and track progress automatically.</p>
+        </div>
+      </div>
+      <div class="grid grid-2">
+        <div class="card form-card">
+          <h3>New goal</h3>
+          <form id="goalForm" onsubmit="event.preventDefault(); addGoal();">
+            <div class="form-field">
+              <label for="goalName">Goal name</label>
+              <input id="goalName" placeholder="Emergency fund, new phone" />
+            </div>
+            <div class="form-field">
+              <label for="goalTarget">Target amount</label>
+              <input id="goalTarget" type="number" min="0" step="0.01" placeholder="0.00" />
+            </div>
+            <div class="form-field">
+              <label for="goalSaved">Already saved</label>
+              <input id="goalSaved" type="number" min="0" step="0.01" placeholder="0.00" />
+            </div>
+            <div class="form-field">
+              <label for="goalDue">Due date</label>
+              <input id="goalDue" type="date" />
+            </div>
+            <button class="button" type="submit">Add goal</button>
+          </form>
+        </div>
+        <div class="card">
+          <h3>Goal list</h3>
+          <table class="table">
+            <thead>
+              <tr><th>Name</th><th>Target</th><th>Due</th><th>Progress</th></tr>
+            </thead>
+            <tbody id="goalListBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="business">
+      <div class="section-header">
+        <div>
+          <h2>Business</h2>
+          <p>Manage separate businesses and track profit, sales, and expenses.</p>
+        </div>
+      </div>
+      <div class="grid grid-2">
+        <div class="card form-card">
+          <h3>Add business</h3>
+          <form id="businessForm" onsubmit="event.preventDefault(); addBusiness();">
+            <div class="form-field">
+              <label for="businessName">Business name</label>
+              <input id="businessName" placeholder="My coffee shop" />
+            </div>
+            <div class="form-field">
+              <label for="businessType">Business type</label>
+              <select id="businessType">
+                <option value="Retail">Retail</option>
+                <option value="Service">Service</option>
+                <option value="Consulting">Consulting</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <button class="button" type="submit">Create business</button>
+          </form>
+        </div>
+        <div id="businessCards" class="grid grid-2"></div>
+      </div>
+      <div id="businessDetail" style="margin-top: 22px;"></div>
+    </section>
+
+    <section class="section" id="combined">
+      <div class="section-header">
+        <div>
+          <h2>Combined Financial View</h2>
+          <p>See your full picture across personal and business finances.</p>
+        </div>
+      </div>
+      <div class="grid grid-3">
+        <div class="card">
+          <h3>Total combined money</h3>
+          <p class="value" id="combinedTotal"></p>
+        </div>
+        <div class="card">
+          <h3>Total income</h3>
+          <p class="value" id="combinedIncome"></p>
+        </div>
+        <div class="card">
+          <h3>Total spending</h3>
+          <p class="value" id="combinedExpense"></p>
+        </div>
+      </div>
+      <div class="card" style="margin-top: 20px;">
+        <h3>Overall profit / loss</h3>
+        <p class="value" id="combinedProfit"></p>
+      </div>
+    </section>
+
+    <section class="section" id="settings">
+      <div class="section-header">
+        <div>
+          <h2>Settings</h2>
+          <p>Control currency, alerts, and app preferences.</p>
+        </div>
+      </div>
+      <div class="card form-card">
+        <div class="form-field">
+          <label for="currencySelect">Currency</label>
+          <select id="currencySelect">
+            <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+            <option value="GBP">GBP</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label class="label" for="alertsToggle">Enable overspending alerts</label>
+          <input id="alertsToggle" type="checkbox" />
+        </div>
+        <button class="button" type="button" onclick="saveSettings()">Save settings</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="public/app.js"></script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Boresha Finance Dashboard</title>
+  <link rel="stylesheet" href="public/styles.css" />
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Boresha</h1>
+      <p>Your finance and business tracking dashboard.</p>
+    </div>
+    <nav>
+      <a href="#overview" class="active">Overview</a>
+      <a href="#personal">Personal</a>
+      <a href="#goals">Goals</a>
+      <a href="#business">Business</a>
+      <a href="#combined">Combined</a>
+      <a href="#settings">Settings</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="section" id="overview">
+      <div class="section-header">
+        <div>
+          <h2>Home Overview</h2>
+          <p>See how your money is doing across personal and business accounts.</p>
+        </div>
+      </div>
+      <div class="grid grid-3" id="overviewGrid"></div>
+      <div class="grid grid-2" style="margin-top: 22px;">
+        <div class="card">
+          <h3>Personal money</h3>
+          <p class="value" id="breakdownPersonal"></p>
+        </div>
+        <div class="card">
+          <h3>Business money</h3>
+          <p class="value" id="breakdownBusiness"></p>
+        </div>
+      </div>
+      <div class="section-header" style="margin-top: 26px;">
+        <div>
+          <h2>Goals progress</h2>
+          <p>Track how close you are to each savings plan.</p>
+        </div>
+      </div>
+      <div id="goalProgressList" class="grid grid-2"></div>
+    </section>
+
+    <section class="section" id="personal">
+      <div class="section-header">
+        <div>
+          <h2>Personal Finance</h2>
+          <p>Add income, record spending, and review your personal cash flow.</p>
+        </div>
+      </div>
+      <div class="grid grid-2">
+        <div class="card">
+          <h3>Balance</h3>
+          <p class="value" id="personalBalanceValue"></p>
+        </div>
+        <div class="card form-card" id="personalFormCard">
+          <h3>Add transaction</h3>
+          <form id="personalForm" onsubmit="event.preventDefault(); addPersonalEntry();">
+            <div class="form-field">
+              <label for="personalType">Transaction type</label>
+              <select id="personalType">
+                <option value="income">Income</option>
+                <option value="expense">Expense</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label for="personalDescription">Description</label>
+              <input id="personalDescription" placeholder="Salary, food, rent" />
+            </div>
+            <div class="form-field">
+              <label for="personalCategory">Category</label>
+              <select id="personalCategory"></select>
+            </div>
+            <div class="form-field">
+              <label for="personalAmount">Amount</label>
+              <input id="personalAmount" type="number" min="0" step="0.01" placeholder="0.00" />
+            </div>
+            <div class="form-field">
+              <label for="personalDate">Date</label>
+              <input id="personalDate" type="date" />
+            </div>
+            <button class="button" type="submit">Save personal entry</button>
+          </form>
+        </div>
+      </div>
+      <div class="card" style="margin-top: 20px;">
+        <table class="table">
+          <thead>
+            <tr><th>Date</th><th>Description</th><th>Category</th><th>Amount</th></tr>
+          </thead>
+          <tbody id="personalTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section" id="goals">
+      <div class="section-header">
+        <div>
+          <h2>Goals</h2>
+          <p>Create saving goals, set targets, and track progress automatically.</p>
+        </div>
+      </div>
+      <div class="grid grid-2">
+        <div class="card form-card">
+          <h3>New goal</h3>
+          <form id="goalForm" onsubmit="event.preventDefault(); addGoal();">
+            <div class="form-field">
+              <label for="goalName">Goal name</label>
+              <input id="goalName" placeholder="Emergency fund, new phone" />
+            </div>
+            <div class="form-field">
+              <label for="goalTarget">Target amount</label>
+              <input id="goalTarget" type="number" min="0" step="0.01" placeholder="0.00" />
+            </div>
+            <div class="form-field">
+              <label for="goalSaved">Already saved</label>
+              <input id="goalSaved" type="number" min="0" step="0.01" placeholder="0.00" />
+            </div>
+            <div class="form-field">
+              <label for="goalDue">Due date</label>
+              <input id="goalDue" type="date" />
+            </div>
+            <button class="button" type="submit">Add goal</button>
+          </form>
+        </div>
+        <div class="card">
+          <h3>Goal list</h3>
+          <table class="table">
+            <thead>
+              <tr><th>Name</th><th>Target</th><th>Due</th><th>Progress</th></tr>
+            </thead>
+            <tbody id="goalListBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="business">
+      <div class="section-header">
+        <div>
+          <h2>Business</h2>
+          <p>Manage separate businesses and track profit, sales, and expenses.</p>
+        </div>
+      </div>
+      <div class="grid grid-2">
+        <div class="card form-card">
+          <h3>Add business</h3>
+          <form id="businessForm" onsubmit="event.preventDefault(); addBusiness();">
+            <div class="form-field">
+              <label for="businessName">Business name</label>
+              <input id="businessName" placeholder="My coffee shop" />
+            </div>
+            <div class="form-field">
+              <label for="businessType">Business type</label>
+              <select id="businessType">
+                <option value="Retail">Retail</option>
+                <option value="Service">Service</option>
+                <option value="Consulting">Consulting</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <button class="button" type="submit">Create business</button>
+          </form>
+        </div>
+        <div id="businessCards" class="grid grid-2"></div>
+      </div>
+      <div id="businessDetail" style="margin-top: 22px;"></div>
+    </section>
+
+    <section class="section" id="combined">
+      <div class="section-header">
+        <div>
+          <h2>Combined Financial View</h2>
+          <p>See your full picture across personal and business finances.</p>
+        </div>
+      </div>
+      <div class="grid grid-3">
+        <div class="card">
+          <h3>Total combined money</h3>
+          <p class="value" id="combinedTotal"></p>
+        </div>
+        <div class="card">
+          <h3>Total income</h3>
+          <p class="value" id="combinedIncome"></p>
+        </div>
+        <div class="card">
+          <h3>Total spending</h3>
+          <p class="value" id="combinedExpense"></p>
+        </div>
+      </div>
+      <div class="card" style="margin-top: 20px;">
+        <h3>Overall profit / loss</h3>
+        <p class="value" id="combinedProfit"></p>
+      </div>
+    </section>
+
+    <section class="section" id="settings">
+      <div class="section-header">
+        <div>
+          <h2>Settings</h2>
+          <p>Control currency, alerts, and app preferences.</p>
+        </div>
+      </div>
+      <div class="card form-card">
+        <div class="form-field">
+          <label for="currencySelect">Currency</label>
+          <select id="currencySelect">
+            <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+            <option value="GBP">GBP</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label class="label" for="alertsToggle">Enable overspending alerts</label>
+          <input id="alertsToggle" type="checkbox" />
+        </div>
+        <button class="button" type="button" onclick="saveSettings()">Save settings</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="public/app.js"></script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Boresha Finance Dashboard</title>
+  <link rel="stylesheet" href="public/styles.css" />
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Boresha</h1>
+      <p>Your finance and business tracking dashboard.</p>
+    </div>
+    <nav>
+      <a href="#overview" class="active">Overview</a>
+      <a href="#personal">Personal</a>
+      <a href="#goals">Goals</a>
+      <a href="#business">Business</a>
+      <a href="#combined">Combined</a>
+      <a href="#settings">Settings</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="section" id="overview">
+      <div class="section-header">
+        <div>
+          <h2>Home Overview</h2>
+          <p>See how your money is doing across personal and business accounts.</p>
+        </div>
+      </div>
+      <div class="grid grid-3" id="overviewGrid"></div>
+      <div class="grid grid-2" style="margin-top: 22px;">
+        <div class="card">
+          <h3>Personal money</h3>
+          <p class="value" id="breakdownPersonal"></p>
+        </div>
+        <div class="card">
+          <h3>Business money</h3>
+          <p class="value" id="breakdownBusiness"></p>
+        </div>
+      </div>
+      <div class="section-header" style="margin-top: 26px;">
+        <div>
+          <h2>Goals progress</h2>
+          <p>Track how close you are to each savings plan.</p>
+        </div>
+      </div>
+      <div id="goalProgressList" class="grid grid-2"></div>
+    </section>
+
+    <section class="section" id="personal">
+      <div class="section-header">
+        <div>
+          <h2>Personal Finance</h2>
+          <p>Add income, record spending, and review your personal cash flow.</p>
+        </div>
+      </div>
+      <div class="grid grid-2">
+        <div class="card">
+          <h3>Balance</h3>
+          <p class="value" id="personalBalanceValue"></p>
+        </div>
+        <div class="card form-card" id="personalFormCard">
+          <h3>Add transaction</h3>
+          <form id="personalForm" onsubmit="event.preventDefault(); addPersonalEntry();">
+            <div class="form-field">
+              <label for="personalType">Transaction type</label>
+              <select id="personalType">
+                <option value="income">Income</option>
+                <option value="expense">Expense</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label for="personalDescription">Description</label>
+              <input id="personalDescription" placeholder="Salary, food, rent" />
+            </div>
+            <div class="form-field">
+              <label for="personalCategory">Category</label>
+              <select id="personalCategory"></select>
+            </div>
+            <div class="form-field">
+              <label for="personalAmount">Amount</label>
+              <input id="personalAmount" type="number" min="0" step="0.01" placeholder="0.00" />
+            </div>
+            <div class="form-field">
+              <label for="personalDate">Date</label>
+              <input id="personalDate" type="date" />
+            </div>
+            <button class="button" type="submit">Save personal entry</button>
+          </form>
+        </div>
+      </div>
+      <div class="card" style="margin-top: 20px;">
+        <table class="table">
+          <thead>
+            <tr><th>Date</th><th>Description</th><th>Category</th><th>Amount</th></tr>
+          </thead>
+          <tbody id="personalTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section" id="goals">
+      <div class="section-header">
+        <div>
+          <h2>Goals</h2>
+          <p>Create saving goals, set targets, and track progress automatically.</p>
+        </div>
+      </div>
+      <div class="grid grid-2">
+        <div class="card form-card">
+          <h3>New goal</h3>
+          <form id="goalForm" onsubmit="event.preventDefault(); addGoal();">
+            <div class="form-field">
+              <label for="goalName">Goal name</label>
+              <input id="goalName" placeholder="Emergency fund, new phone" />
+            </div>
+            <div class="form-field">
+              <label for="goalTarget">Target amount</label>
+              <input id="goalTarget" type="number" min="0" step="0.01" placeholder="0.00" />
+            </div>
+            <div class="form-field">
+              <label for="goalSaved">Already saved</label>
+              <input id="goalSaved" type="number" min="0" step="0.01" placeholder="0.00" />
+            </div>
+            <div class="form-field">
+              <label for="goalDue">Due date</label>
+              <input id="goalDue" type="date" />
+            </div>
+            <button class="button" type="submit">Add goal</button>
+          </form>
+        </div>
+        <div class="card">
+          <h3>Goal list</h3>
+          <table class="table">
+            <thead>
+              <tr><th>Name</th><th>Target</th><th>Due</th><th>Progress</th></tr>
+            </thead>
+            <tbody id="goalListBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="business">
+      <div class="section-header">
+        <div>
+          <h2>Business</h2>
+          <p>Manage separate businesses and track profit, sales, and expenses.</p>
+        </div>
+      </div>
+      <div class="grid grid-2">
+        <div class="card form-card">
+          <h3>Add business</h3>
+          <form id="businessForm" onsubmit="event.preventDefault(); addBusiness();">
+            <div class="form-field">
+              <label for="businessName">Business name</label>
+              <input id="businessName" placeholder="My coffee shop" />
+            </div>
+            <div class="form-field">
+              <label for="businessType">Business type</label>
+              <select id="businessType">
+                <option value="Retail">Retail</option>
+                <option value="Service">Service</option>
+                <option value="Consulting">Consulting</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <button class="button" type="submit">Create business</button>
+          </form>
+        </div>
+        <div id="businessCards" class="grid grid-2"></div>
+      </div>
+      <div id="businessDetail" style="margin-top: 22px;"></div>
+    </section>
+
+    <section class="section" id="combined">
+      <div class="section-header">
+        <div>
+          <h2>Combined Financial View</h2>
+          <p>See your full picture across personal and business finances.</p>
+        </div>
+      </div>
+      <div class="grid grid-3">
+        <div class="card">
+          <h3>Total combined money</h3>
+          <p class="value" id="combinedTotal"></p>
+        </div>
+        <div class="card">
+          <h3>Total income</h3>
+          <p class="value" id="combinedIncome"></p>
+        </div>
+        <div class="card">
+          <h3>Total spending</h3>
+          <p class="value" id="combinedExpense"></p>
+        </div>
+      </div>
+      <div class="card" style="margin-top: 20px;">
+        <h3>Overall profit / loss</h3>
+        <p class="value" id="combinedProfit"></p>
+      </div>
+    </section>
+
+    <section class="section" id="settings">
+      <div class="section-header">
+        <div>
+          <h2>Settings</h2>
+          <p>Control currency, alerts, and app preferences.</p>
+        </div>
+      </div>
+      <div class="card form-card">
+        <div class="form-field">
+          <label for="currencySelect">Currency</label>
+          <select id="currencySelect">
+            <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+            <option value="GBP">GBP</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label class="label" for="alertsToggle">Enable overspending alerts</label>
+          <input id="alertsToggle" type="checkbox" />
+        </div>
+        <button class="button" type="button" onclick="saveSettings()">Save settings</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="public/app.js"></script>
+</body>
+</html>
