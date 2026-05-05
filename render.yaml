@@ -2,7 +2,6 @@ services:
   - type: web
     name: boresha
     env: node
-    plan: free
     buildCommand: npm install
     startCommand: npm run build && npm start
     envVars:
@@ -24,5 +23,5 @@ services:
 databases:
   - name: boresha
     engine: postgres
-    plan: free
     postgresVersion: "15"
+

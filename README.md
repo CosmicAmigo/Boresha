@@ -24,7 +24,7 @@ A finance and business tracking app built with Node.js, PostgreSQL, and Google l
 
 ## Deploying on Render
 
-### Using render.yaml (Recommended)
+### Option 1: Using render.yaml (Recommended)
 
 1. Push your code to GitHub
 2. Connect your Render account and create a new service from your repository
@@ -35,7 +35,23 @@ A finance and business tracking app built with Node.js, PostgreSQL, and Google l
    - `GOOGLE_CALLBACK_URL` (e.g., `https://your-app.render.com/auth/google/callback`)
 5. Deploy
 
-### Manual Setup
+### Option 2: Using Dockerfile (Alternative)
+
+If render.yaml doesn't work, Render will automatically use the Dockerfile:
+
+1. Create a new Web Service on Render
+2. Connect your GitHub repository
+3. Render will detect the Dockerfile automatically
+4. Add the following environment variables:
+   - `DATABASE_URL` (Render provides this from the PostgreSQL instance)
+   - `GOOGLE_CLIENT_ID`
+   - `GOOGLE_CLIENT_SECRET`
+   - `GOOGLE_CALLBACK_URL` (use your Render domain)
+   - `SESSION_SECRET` (generate a secure random string)
+   - `NODE_ENV=production`
+5. Deploy
+
+### Option 3: Manual Setup
 
 1. Create a new Web Service and PostgreSQL database on Render
 2. Connect your GitHub repository

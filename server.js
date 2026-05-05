@@ -33,6 +33,22 @@ const pool = new Pool({
   ssl: nodeEnv === 'production' ? { rejectUnauthorized: false } : false
 });
 
+// Initialize database schema
+async function initializeDatabase() {
+  try {
+    const fs = require('fs');
+    const path = require('path');
+    const sqlFile = path.join(__dirname, 'database.sql');
+    const sql = fs.readFileSync(sqlFile, 'utf-8');
+    
+    await pool.query(sql);
+    console.log('✓ Database schema initialized successfully');
+  } catch (error) {
+    console.error('✗ Database initialization failed:', error.message);
+    // Don't exit process, just log the error
+  }
+}
+
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.urlencoded({ extended: true }));
@@ -329,6 +345,7 @@ app.post('/settings', ensureAuthenticated, async (req, res) => {
   res.redirect('/settings');
 });
 
-app.listen(port, () => {
+app.listen(port, async () => {
   console.log(`Boresha app is running on http://localhost:${port}`);
+  await initializeDatabase();
 });
